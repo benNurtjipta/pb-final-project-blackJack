@@ -15,8 +15,6 @@ let dealerTotal = 0;
 let playerMoney = 1000;
 let bet = 0;
 
-let splitCount = 0;
-
 //functions
 
 function createDeck() {
@@ -177,13 +175,13 @@ function push() {
   readlineSync.question("");
 }
 
-function dealerPlay() {
+function dealerPlay(index) {
   while (true) {
     playerTotal = 0;
     dealerTotal = 0;
     console.clear();
-    for (let j = 0; j < playerHand[splitCount].length; j++) {
-      playerTotal += playerHand[splitCount][j].value;
+    for (let j = 0; j < playerHand[index].length; j++) {
+      playerTotal += playerHand[index][j].value;
     }
 
     console.log(`\nYour Money: $${playerMoney}`);
@@ -192,7 +190,7 @@ function dealerPlay() {
       console.log(`Split ${i + 1}`);
     }
     console.log(`\nBet: $${bet}\n`);
-    displayCards(playerHand[splitCount]);
+    displayCards(playerHand[index]);
     console.log(`\nTotal: ${playerTotal}`);
 
     console.log(
@@ -208,26 +206,26 @@ function dealerPlay() {
     console.log(`\nTotal: ${dealerTotal}`);
     if (dealerTotal === 21 && dealerHand[0].some((card) => card.value === 11)) {
       blackJack();
-      break;
+      return;
     }
     if (dealerTotal <= 16) {
       dealerHand[0].push(deck.pop());
-      break;
     }
     if (dealerTotal === playerTotal) {
       push();
-      break;
+      return;
     }
-    if (dealerTotal > 21) {
+    if (dealerTotal > 21 || dealerTotal < playerTotal) {
       wins();
-      break;
+      return;
     }
     if (dealerTotal > playerTotal) {
       loses();
-      break;
+      return;
     }
+    console.log(`\n\n\n\nPress Enter to Continue`);
+    readlineSync.question("");
   }
-  splitCount++;
 }
 
 function mainTable() {
@@ -273,11 +271,11 @@ function mainTable() {
       console.log(`\nPlease choose an option:`);
       let userchoice = readlineSync.questionInt(
         `\n1. Hit\n2. Stand\n${
-          playerHand[i][0].value === playerHand[i][1].value ? "3. Split" : ""
+          playerHand[i][0].face === playerHand[i][1].face ? "3. Split" : "" //doesnt work for one card after split
         }\n>`,
         {
           limit: `${
-            playerHand[i][0].value === playerHand[i][1].value ? "12" : "123"
+            playerHand[i][0].face === playerHand[i][1].face ? "12" : "123"
           }`,
         }
       );
@@ -285,15 +283,14 @@ function mainTable() {
         playerHand[i].push(deck.pop());
       }
       if (userchoice === 2) {
-        dealerPlay();
+        dealerPlay(i);
+        return;
       }
       if (userchoice === 3) {
         playerMoney -= bet;
-        let tempHand = playerHand[i];
-        playerHand.length = 0;
-        playerHand[i].push(tempHand[i][1]);
-        playerHand[i + 1].push(tempHand[i][1]);
-        // what happens is it splits multiple times.....FUCK
+        let tempArr = playerHand[i].splice(1, 1);
+        playerHand.push(tempArr);
+        // what happens is it splits multiple times.....FUCK. write a function/use extra counter i+extracounter, extracounter++
       }
     }
   }
@@ -330,7 +327,7 @@ while (true) {
   playerTotal = 0;
   dealerTotal = 0;
   bet = 0;
-  splitCount = 0;
+
   deck = originalDeck;
   console.clear();
 
