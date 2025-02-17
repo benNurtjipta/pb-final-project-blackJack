@@ -284,6 +284,8 @@ function mainTable() {
       }
       if (userchoice === 2) {
         dealerPlay(i);
+        playerHand.length = 0;
+        dealerHand.length = 0;
         return;
       }
       if (userchoice === 3) {
