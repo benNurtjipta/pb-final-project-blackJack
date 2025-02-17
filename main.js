@@ -47,17 +47,18 @@ function createDeck() {
 }
 
 function getAscii(card) {
+  let facePlus = card.face;
   if (card.face !== "10") {
-    card.face = card.face + " ";
+    facePlus = card.face + " ";
   }
   return `
  _________ 
-| ${card.face}      |
+| ${facePlus}      |
 |         |
 |         |
 |    ${card.suit}    |
 |         |
-|       ${card.face}|
+|       ${facePlus}|
 |_________|`;
 }
 
@@ -111,13 +112,11 @@ function wins() {
 }
 
 function mainTable() {
-  console.clear();
-
   playerTotal = 0;
   for (let i = 0; i < playerHand.length; i++) {
     while (true) {
       playerTotal = 0;
-
+      console.clear();
       for (let j = 0; j < playerHand[i].length; j++) {
         playerTotal += playerHand[i][j].value;
       }
