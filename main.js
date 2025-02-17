@@ -15,6 +15,8 @@ let dealerTotal = 0;
 let playerMoney = 1000;
 let bet = 0;
 
+let splitCount = 0;
+
 //functions
 
 function createDeck() {
@@ -96,6 +98,8 @@ function dealCards(hand, amount) {
 
 function wins() {
   playerMoney += bet * 2;
+  console.log(`\n\n\n\n`);
+
   console.log(String.raw`
  /$$     /$$ /$$$$$$  /$$   /$$       /$$      /$$ /$$$$$$ /$$   /$$
 |  $$   /$$//$$__  $$| $$  | $$      | $$  /$ | $$|_  $$_/| $$$ | $$
@@ -109,10 +113,126 @@ function wins() {
                                                                     
                                                                     
 `);
+  console.log(`\n\n\n\nPress Enter to Continue`);
+  readlineSync.question("");
+}
+
+function blackJack() {
+  playerMoney += bet * 2;
+  console.log(`\n\n\n\n`);
+
+  console.log(String.raw`
+ /$$$$$$$  /$$        /$$$$$$   /$$$$$$  /$$   /$$          /$$$$$  /$$$$$$   /$$$$$$  /$$   /$$
+| $$__  $$| $$       /$$__  $$ /$$__  $$| $$  /$$/         |__  $$ /$$__  $$ /$$__  $$| $$  /$$/
+| $$  \ $$| $$      | $$  \ $$| $$  \__/| $$ /$$/             | $$| $$  \ $$| $$  \__/| $$ /$$/ 
+| $$$$$$$ | $$      | $$$$$$$$| $$      | $$$$$/              | $$| $$$$$$$$| $$      | $$$$$/  
+| $$__  $$| $$      | $$__  $$| $$      | $$  $$         /$$  | $$| $$__  $$| $$      | $$  $$  
+| $$  \ $$| $$      | $$  | $$| $$    $$| $$\  $$       | $$  | $$| $$  | $$| $$    $$| $$\  $$ 
+| $$$$$$$/| $$$$$$$$| $$  | $$|  $$$$$$/| $$ \  $$      |  $$$$$$/| $$  | $$|  $$$$$$/| $$ \  $$
+|_______/ |________/|__/  |__/ \______/ |__/  \__/       \______/ |__/  |__/ \______/ |__/  \__/
+                                                                                                
+                                                                                                
+                                                                                                
+`);
+  console.log(`\n\n\n\nPress Enter to Continue`);
+  readlineSync.question("");
+}
+
+function loses() {
+  console.log(`\n\n\n\n`);
+  console.log(String.raw`
+ /$$     /$$ /$$$$$$  /$$   /$$       /$$        /$$$$$$   /$$$$$$  /$$$$$$$$
+|  $$   /$$//$$__  $$| $$  | $$      | $$       /$$__  $$ /$$__  $$| $$_____/
+ \  $$ /$$/| $$  \ $$| $$  | $$      | $$      | $$  \ $$| $$  \__/| $$      
+  \  $$$$/ | $$  | $$| $$  | $$      | $$      | $$  | $$|  $$$$$$ | $$$$$   
+   \  $$/  | $$  | $$| $$  | $$      | $$      | $$  | $$ \____  $$| $$__/   
+    | $$   | $$  | $$| $$  | $$      | $$      | $$  | $$ /$$  \ $$| $$      
+    | $$   |  $$$$$$/|  $$$$$$/      | $$$$$$$$|  $$$$$$/|  $$$$$$/| $$$$$$$$
+    |__/    \______/  \______/       |________/ \______/  \______/ |________/
+                                                                             
+                                                                             
+                                                                             
+`);
+  console.log(`\n\n\n\nPress Enter to Continue`);
+  readlineSync.question("");
+}
+
+function push() {
+  console.log(`\n\n\n\n`);
+  console.log(String.raw`
+ /$$$$$$$  /$$   /$$  /$$$$$$  /$$   /$$
+| $$__  $$| $$  | $$ /$$__  $$| $$  | $$
+| $$  \ $$| $$  | $$| $$  \__/| $$  | $$
+| $$$$$$$/| $$  | $$|  $$$$$$ | $$$$$$$$
+| $$____/ | $$  | $$ \____  $$| $$__  $$
+| $$      | $$  | $$ /$$  \ $$| $$  | $$
+| $$      |  $$$$$$/|  $$$$$$/| $$  | $$
+|__/       \______/  \______/ |__/  |__/
+                                        
+                                        
+                                        
+`);
+  playerMoney += bet;
+  console.log(`\n\n\n\nPress Enter to Continue`);
+  readlineSync.question("");
+}
+
+function dealerPlay() {
+  while (true) {
+    playerTotal = 0;
+    dealerTotal = 0;
+    console.clear();
+    for (let j = 0; j < playerHand[splitCount].length; j++) {
+      playerTotal += playerHand[splitCount][j].value;
+    }
+
+    console.log(`\nYour Money: $${playerMoney}`);
+
+    if (playerHand.length > 1) {
+      console.log(`Split ${i + 1}`);
+    }
+    console.log(`\nBet: $${bet}\n`);
+    displayCards(playerHand[splitCount]);
+    console.log(`\nTotal: ${playerTotal}`);
+
+    console.log(
+      `\n\n\n--------------------------------------------\n\nDealer:`
+    );
+    for (let j = 0; j < dealerHand[0].length; j++) {
+      dealerTotal += dealerHand[0][j].value;
+    }
+    if (dealerTotal > 21 && dealerHand[0].some((card) => card.value === 11)) {
+      dealerTotal -= 10;
+    }
+    displayCards(dealerHand[0]);
+    console.log(`\nTotal: ${dealerTotal}`);
+    if (dealerTotal === 21 && dealerHand[0].some((card) => card.value === 11)) {
+      blackJack();
+      break;
+    }
+    if (dealerTotal <= 16) {
+      dealerHand[0].push(deck.pop());
+      break;
+    }
+    if (dealerTotal === playerTotal) {
+      push();
+      break;
+    }
+    if (dealerTotal > 21) {
+      wins();
+      break;
+    }
+    if (dealerTotal > playerTotal) {
+      loses();
+      break;
+    }
+  }
+  splitCount++;
 }
 
 function mainTable() {
   playerTotal = 0;
+
   for (let i = 0; i < playerHand.length; i++) {
     while (true) {
       playerTotal = 0;
@@ -120,6 +240,10 @@ function mainTable() {
       for (let j = 0; j < playerHand[i].length; j++) {
         playerTotal += playerHand[i][j].value;
       }
+      if (playerTotal > 21 && playerHand[i].some((card) => card.value === 11)) {
+        playerTotal -= 10;
+      }
+
       console.log(`\nYour Money: $${playerMoney}`);
 
       if (playerHand.length > 1) {
@@ -139,7 +263,11 @@ function mainTable() {
         playerTotal === 21 &&
         playerHand[i].some((card) => card.value === 11)
       ) {
-        wins();
+        blackJack();
+        break;
+      }
+      if (playerTotal > 21) {
+        loses();
         break;
       }
       console.log(`\nPlease choose an option:`);
@@ -156,15 +284,26 @@ function mainTable() {
       if (userchoice === 1) {
         playerHand[i].push(deck.pop());
       }
+      if (userchoice === 2) {
+        dealerPlay();
+      }
+      if (userchoice === 3) {
+        playerMoney-=bet
+        let tempHand = playerHand[i];
+        playerHand.length = 0;
+        playerHand[i].push(tempHand[i][1])
+        playerHand[i+1].push(tempHand[i][1])
+        // what happens is it splits multiple times.....FUCK
     }
   }
-  //put cards back into deck!!!
+  playerHand.length = 0;
+  dealerHand.length = 0;
   return;
 }
 
 //create deck
-let deck = createDeck();
-
+let originalDeck = createDeck();
+let deck = [];
 //welcome screen
 
 console.clear();
@@ -190,6 +329,8 @@ while (true) {
   playerTotal = 0;
   dealerTotal = 0;
   bet = 0;
+  splitCount = 0;
+  deck = originalDeck;
   console.clear();
 
   console.log(String.raw`
@@ -204,7 +345,7 @@ __________.____       _____  _________  ____  __.      ____.  _____  _________  
 ♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠
 `);
   console.log(`\n\n\nYour Record: $${highScore}`);
-
+  console.log(`\nBalance: $${playerMoney}`);
   const options = ["DEAL CARDS", "QUIT"];
   const userChoice = readlineSync.keyInSelect(
     options,
@@ -221,24 +362,26 @@ __________.____       _____  _________  ____  __.      ____.  _____  _________  
     deck = shuffleDeck();
 
     console.clear();
-    const frames = ["|", "/", "-", "\\"];
-    let i = 0;
-    const interval = setInterval(() => {
-      process.stdout.write(
-        "\r" + frames[i++ % frames.length] + " Shuffling..."
-      );
-    }, 100);
+    // const frames = ["|", "/", "-", "\\"];
+    // let i = 0;
+    // const interval = setInterval(() => {
+    //   process.stdout.write(
+    //     "\r" + frames[i++ % frames.length] + " Shuffling..."
+    //   );
+    // }, 100);
 
-    setTimeout(() => {
-      clearInterval(interval);
-      console.log("\nDone!");
-      dealCards(playerHand, 2);
-      dealCards(dealerHand, 2);
-      mainTable();
-    }, 2000);
+    // setTimeout(() => {
+    //   clearInterval(interval);
+    //   console.log("\nDone!");
+    //   dealCards(playerHand, 2);
+    //   dealCards(dealerHand, 2);
+    //   mainTable();
+    // }, 2000);
+    dealCards(playerHand, 2);
+    dealCards(dealerHand, 2);
+    mainTable();
   } else {
     console.log("Goodbye");
     process.exit(0);
   }
-  break;
 }
