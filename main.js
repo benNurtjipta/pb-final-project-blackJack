@@ -288,12 +288,13 @@ function mainTable() {
         dealerPlay();
       }
       if (userchoice === 3) {
-        playerMoney-=bet
+        playerMoney -= bet;
         let tempHand = playerHand[i];
         playerHand.length = 0;
-        playerHand[i].push(tempHand[i][1])
-        playerHand[i+1].push(tempHand[i][1])
+        playerHand[i].push(tempHand[i][1]);
+        playerHand[i + 1].push(tempHand[i][1]);
         // what happens is it splits multiple times.....FUCK
+      }
     }
   }
   playerHand.length = 0;
