@@ -22,7 +22,7 @@ function createDeck() {
   for (const suit of suits) {
     for (let i = 2; i < 12; i++) {
       if (i === 10) {
-        for (let face of faceCards) {
+        for (const face of faceCards) {
           let card = {};
           card.suit = suit;
           card.value = 10;
@@ -116,7 +116,9 @@ function wins() {
 }
 
 function blackJack() {
-  playerMoney += bet * 2;
+  if (playerTotal > dealerTotal) {
+    playerMoney += bet * 2;
+  }
   console.log(`\n\n\n\n`);
 
   console.log(String.raw`
@@ -204,12 +206,18 @@ function dealerPlay(index) {
     }
     displayCards(dealerHand[0]);
     console.log(`\nTotal: ${dealerTotal}`);
-    if (dealerTotal === 21 && dealerHand[0].some((card) => card.value === 11)) {
+    if (
+      dealerTotal === 21 &&
+      dealerHand[0].some((card) => card.value === 11) &&
+      dealerHand[0].length === 2
+    ) {
       blackJack();
+      loses();
       return;
     }
     if (dealerTotal <= 16) {
       dealerHand[0].push(deck.pop());
+      continue;
     }
     if (dealerTotal === playerTotal) {
       push();
@@ -238,7 +246,11 @@ function mainTable() {
       for (let j = 0; j < playerHand[i].length; j++) {
         playerTotal += playerHand[i][j].value;
       }
-      if (playerTotal > 21 && playerHand[i].some((card) => card.value === 11)) {
+      if (
+        playerTotal > 21 &&
+        playerHand[i].some((card) => card.value === 11) &&
+        playerHand[i].length === 2
+      ) {
         playerTotal -= 10;
       }
 
@@ -332,7 +344,10 @@ while (true) {
 
   deck = originalDeck;
   console.clear();
-
+  if (playerMoney <= 0) {
+    console.log("You have no money left! Please start again");
+    process.exit(0);
+  }
   console.log(String.raw`
 ♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠   
 __________.____       _____  _________  ____  __.      ____.  _____  _________  ____  __.
