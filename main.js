@@ -189,17 +189,17 @@ function dealerPlay(index) {
     console.log(`\nYour Money: $${playerMoney}`);
 
     if (playerHand.length > 1) {
-      console.log(`Split ${i + 1}`);
+      console.log(`Split ${index + 1}`);
     }
     console.log(`\nBet: $${bet}\n`);
     displayCards(playerHand[index]);
     console.log(`\nTotal: ${playerTotal}`);
 
     console.log(
-      `\n\n\n--------------------------------------------\n\nDealer:`
+      `\n\n\n♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠\n\nDealer:`
     );
     for (let j = 0; j < dealerHand[0].length; j++) {
-      dealerTotal += dealerHand[0][j].value;
+      dealerTotal += dealerHand[0][j].value; //value not defined??
     }
     if (dealerTotal > 21 && dealerHand[0].some((card) => card.value === 11)) {
       dealerTotal -= 10;
@@ -211,11 +211,16 @@ function dealerPlay(index) {
       dealerHand[0].some((card) => card.value === 11) &&
       dealerHand[0].length === 2
     ) {
-      blackJack();
+      console.log("Dealer BLACK JACK!");
+
       loses();
       return;
     }
     if (dealerTotal <= 16) {
+      dealerHand[0].push(deck.pop());
+      continue;
+    }
+    if (dealerTotal > 16 && dealerHand[0].some((card) => card.value === 11)) {
       dealerHand[0].push(deck.pop());
       continue;
     }
@@ -264,7 +269,7 @@ function mainTable() {
       console.log(`\nTotal: ${playerTotal}`);
 
       console.log(
-        `\n\n\n--------------------------------------------\n\nDealer:`
+        `\n\n\n♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠\n\nDealer:`
       );
 
       console.log(getAscii(dealerHand[0][0]));
@@ -283,11 +288,17 @@ function mainTable() {
       console.log(`\nPlease choose an option:`);
       let userchoice = readlineSync.questionInt(
         `\n1. Hit\n2. Stand\n${
-          playerHand[i][0].face === playerHand[i][1].face ? "3. Split" : "" //doesnt work for one card after split
+          playerHand[i].length > 1 &&
+          playerHand[i][0].face === playerHand[i][1].face
+            ? "3. Split"
+            : ""
         }\n>`,
         {
           limit: `${
-            playerHand[i][0].face === playerHand[i][1].face ? "12" : "123"
+            playerHand[i].length > 1 &&
+            playerHand[i][0].face === playerHand[i][1].face
+              ? "12"
+              : "123"
           }`,
         }
       );
@@ -304,7 +315,6 @@ function mainTable() {
         playerMoney -= bet;
         let tempArr = playerHand[i].splice(1, 1);
         playerHand.push(tempArr);
-        // what happens is it splits multiple times.....FUCK. write a function/use extra counter i+extracounter, extracounter++
       }
     }
   }
@@ -388,10 +398,8 @@ __________.____       _____  _________  ____  __.      ____.  _____  _________  
     // setTimeout(() => {
     //   clearInterval(interval);
     //   console.log("\nDone!");
-    //   dealCards(playerHand, 2);
-    //   dealCards(dealerHand, 2);
-    //   mainTable();
     // }, 2000);
+
     dealCards(playerHand, 2);
     dealCards(dealerHand, 2);
     mainTable();
@@ -399,4 +407,5 @@ __________.____       _____  _________  ____  __.      ____.  _____  _________  
     console.log("Goodbye");
     process.exit(0);
   }
+  1;
 }
